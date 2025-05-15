@@ -1,0 +1,19 @@
+services:
+  segmentator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: segmentator:latest
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - DISPLAY=${DISPLAY}  # 使得容器使用主机的显示
+    volumes:
+      - ../ESAM:/home/user/workspace/ESAM
+      - /tmp/.X11-unix:/tmp/.X11-unix  # 挂载 X11 套接字
+      - ${HOME}/.Xauthority:/root/.Xauthority  # 使容器能访问主机的 X11 权限
+    command: bash
+    tty: true
+    stdin_open: true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # 使容器可以访问主机

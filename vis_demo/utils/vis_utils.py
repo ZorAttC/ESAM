@@ -4,6 +4,7 @@ import os
 
 class vis_pointcloud:
     def __init__(self, use_vis, online_vis=False):
+        self.online_vis=online_vis
         self.use_vis=use_vis
         if self.use_vis==0:
             return
@@ -27,7 +28,11 @@ class vis_pointcloud:
         pcd = o3d.geometry.PointCloud()
         pcd.points = o3d.utility.Vector3dVector(points)
         pcd.colors =  o3d.utility.Vector3dVector(points_color/255)
-        self.vis.add_geometry(pcd)
+        #downsample point cloud
+        new_pcd = o3d.geometry.PointCloud()
+        voxel_size = 0.06  # 设置体素大小（根据需求调整）
+        new_pcd = pcd.voxel_down_sample(voxel_size=voxel_size)
+        self.vis.add_geometry(new_pcd)
         if self.view:
             ctr = self.vis.get_view_control()
             ctr.convert_from_pinhole_camera_parameters(self.param)

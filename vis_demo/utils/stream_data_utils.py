@@ -30,13 +30,17 @@ class DataPreprocessor:
         assert intrinsic is not None, "Intrinsic is not fixed, please input camera intrinsic of this frame."
         
         bgr = cv2.cvtColor(color_map, cv2.COLOR_RGB2BGR)
+        import time
+        start_time = time.time()
         everything_result = self.mask_generator(bgr, device='cuda', retina_masks=True, imgsz=self.unify_dim[0], conf=0.1, iou=0.9)
+        print(f'Time cost for mask generation: {time.time() - start_time:.2f}s')
         try:
             masks = format_result(everything_result[0])
         except:
             everything_result = self.mask_generator(bgr, device='cuda', retina_masks=True, imgsz=self.unify_dim[0], conf=0.1, iou=0.7,)
             masks = format_result(everything_result[0])
         masks = sorted(masks, key=(lambda x: x['area']), reverse=True)
+        #创建分组id
         group_ids = np.full((color_map.shape[0], color_map.shape[1]), -1, dtype=int)
         num_masks = len(masks)
         group_counter = 0
@@ -56,6 +60,8 @@ class DataPreprocessor:
         group_ids = group_ids.reshape(-1)
         color_map = color_map.reshape(-1, 3)
         
+
+        #过滤无效点（深度值过小的点）。
         valid = np.where(depth_map > 0.1)[0]
         ww_ind = ww_ind[valid]
         hh_ind = hh_ind[valid]
@@ -64,6 +70,7 @@ class DataPreprocessor:
         rgb = color_map[valid]
         
         # For MV: downsample to 20000
+        #合并点云坐标、颜色和超点 ID，并下采样到固定点数（20000）。
         unaligned_xyz = convert_from_uvd(ww_ind, hh_ind, depth_map, intrinsic, pose)
         if np.isnan(unaligned_xyz).any(): 
             return None

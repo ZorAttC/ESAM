@@ -1,0 +1,21 @@
+echo "export PYTHONPATH=/home/zoratt/3DSG/ESAM/:$PYTHONPATH" >> ~/.bashrc
+echo "export PYTHONPATH=/MinkowskiEngine/build/lib.linux-x86_64-cpython-38/:$PYTHONPATH" >> ~/.bashrc
+pip install spconv_cu116
+
+pip install torch-scatter -f https://data.pyg.org/whl/torch-$(python -c "import torch; print(torch.__version__.split('+')[0])").html
+
+pip install ultralytics=8.0.46
+sudo apt-get update
+sudo apt-get install python3-tk
+
+CUDA_VISIBLE_DEVICES=0 python tools/test.py configs/ESAM-E_CA/ESAM-E_online_scenenn_CA_test.py /home/user/workspace/ESAM/work_dirs/ESAM-E_CA_online_epoch_128.pth --work-dir work_dirs/ESAM-E_online_scenenn_CA_test/
+
+
+sudo python setup.py install --blas_include_dirs=${CONDA_PREFIX}/include --blas=openblas
+
+python preprocess_scenenn_stream.py valid
+
+python vis_demo/stream_demo.py --data_root data/scenenn/SceneNN_stream/valid/011 --online_vis
+
+
+docker进行训练要改shm大小，要不然会爆共享内存

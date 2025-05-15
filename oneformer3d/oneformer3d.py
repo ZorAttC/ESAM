@@ -2,8 +2,8 @@ import torch
 import torch.nn.functional as F
 import spconv.pytorch as spconv
 from torch_scatter import scatter_mean
-import MinkowskiEngine as ME
 import pointops
+import MinkowskiEngine as ME
 import copy
 from mmdet3d.registry import MODELS
 from mmdet3d.structures import PointData

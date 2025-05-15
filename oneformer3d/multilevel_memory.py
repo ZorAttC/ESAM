@@ -12,7 +12,7 @@ from mmdet3d.registry import MODELS
 from mmengine.model import BaseModule, constant_init
 import pdb
 
-
+#Viewpoint-based Multi-path Module (VMP)
 @MODELS.register_module()
 class MultilevelMemory(BaseModule):
     def __init__(self, in_channels=[64, 128, 256, 512], scale=2.5, queue=-1, vmp_layer=(0,1,2,3)):

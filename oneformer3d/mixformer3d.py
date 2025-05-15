@@ -479,17 +479,17 @@ class ScanNet200MixFormer3D_Online(ScanNetOneFormer3DMixin, Base3DDetector):
         super(Base3DDetector, self).__init__(
             data_preprocessor=data_preprocessor, init_cfg=init_cfg)
 
-        self.backbone = MODELS.build(backbone)
+        self.backbone = MODELS.build(backbone) #Res16UNet34C
         if memory is not None:
-            self.memory = MODELS.build(memory)
+            self.memory = MODELS.build(memory) #MultilevelMemory
         if neck is not None:
             self.neck = MODELS.build(neck)
-        self.pool = MODELS.build(pool)
-        self.decoder = MODELS.build(decoder)
+        self.pool = MODELS.build(pool) #GeoAwarePooling
+        self.decoder = MODELS.build(decoder) #ScanNetMixQueryDecoder
         if merge_head is not None:
-            self.merge_head = MODELS.build(merge_head)
+            self.merge_head = MODELS.build(merge_head) #MergeHead
         if merge_criterion is not None:
-            self.merge_criterion = MODELS.build(merge_criterion)
+            self.merge_criterion = MODELS.build(merge_criterion)#ScanNetMergeCriterion_Fast
         self.criterion = MODELS.build(criterion)
         self.decoder_online = decoder['temporal_attn']
         self.use_bbox = decoder['bbox_flag']

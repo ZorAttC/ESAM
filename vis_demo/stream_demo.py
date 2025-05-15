@@ -167,7 +167,11 @@ class StreamDemo:
             if end_flag:
                 self.vis(None, None, None, True)
                 break
+
+            time_s1=time.time()
             group_ids, pts = self.data_preprocessor.process_single_frame(color_map, depth_map, pose)
+            time_s2=time.time()
+            print(f"FASTSAM processing: {time_s2 - time_s1:.2f}s")
             points = torch.from_numpy(pts).float()
             sp_pts_mask = torch.from_numpy(group_ids).long().to(self.device)
             input_dict = {'points':points.to(self.device)}
@@ -177,8 +181,13 @@ class StreamDemo:
             data_sample.gt_pts_seg = gt_pts_seg
             data = [dict(inputs=input_dict, data_samples=data_sample)]
             collate_data = pseudo_collate(data)
+            time_s3=time.time()
+            print(f"Data transfering: {time_s3 - time_s2:.2f}s")
             with torch.no_grad():
                 result = self.model.test_step(collate_data)
+            time_s4=time.time()
+            print(f"Model inference time: {time_s4 - time_s3:.2f}s")
+            
             all_images.append(color_map)
             if self.online_vis:
                 pred_ins_mask = result[0].pred_pts_seg.pts_instance_mask[0]
@@ -229,7 +238,7 @@ def main():
     parser.add_argument('--max_frames', type=int, default=10000, help='Max frame number to process')
     # args about model
     parser.add_argument('--config', type=str, default='configs/ESAM-E_CA/ESAM-E_online_stream.py', help='Config file')
-    parser.add_argument('--checkpoint', type=str, default='work_dirs/ESAM-E_online_scannet200_CA/epoch_128.pth', help='Checkpoint file')
+    parser.add_argument('--checkpoint', type=str, default='work_dirs/ESAM-E_CA_online_epoch_128.pth', help='Checkpoint file')
     parser.add_argument('--device', default='cuda:0', help='Device used for inference')
     # args about visualization
     parser.add_argument('--use_vis', type=int, default="1", help="Whether to enable visualization, set to 1 to enable")

@@ -45,6 +45,12 @@ For visualization on the provided datasets or **your own data**, please follow:
 * [Visualization Demo](./docs/demo.md)
 
 
+support Docker launch
+'''
+cd ~/ESAM
+docker compose up --build
+'''
+
 ## Main Results
 We provide the checkpoints for quick reproduction of the results reported in the paper. In addition to Tsinghua Cloud, we also upload the checkpoints and processed data to HuggingFace. Click [here](https://huggingface.co/XXXCARREY/EmbodiedSAM/tree/main) for more details.
 

@@ -187,8 +187,8 @@ test_pipeline = [
 train_dataloader = None
 
 val_dataloader = dict(
-    # persistent_workers=False,
-    # num_workers=0,
+    persistent_workers=False,
+    num_workers=0,
     dataset=dict(
         type=dataset_type,
         ann_file='scenenn_mv_oneformer3d_infos_val.pkl',

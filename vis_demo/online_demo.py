@@ -123,16 +123,20 @@ def main():
     # visualize the scene
     vis_p = vis_pointcloud(args.use_vis)
     vis_c = Vis_color(args.use_vis)
-    
+    print("len(scene_images):", len(scene_images))
+
+    waiyKey=input("Press any key to continue...")
     for i in range(len(scene_images)):
+        print("len(points[i]):", len(points[i]))
+        
         vis_p.update(points[i], points_color[i])
         vis_c.update(scene_images[i])
     vis_p.run()
     
     # if you want to save the camera parameters, you can use the following code
-    # param = vis_p.vis.get_view_control().convert_to_pinhole_camera_parameters()
-    # o3d.io.write_pinhole_camera_parameters('temp.json', param)
-    # vis_p.vis.destroy_window()
+    param = vis_p.vis.get_view_control().convert_to_pinhole_camera_parameters()
+    o3d.io.write_pinhole_camera_parameters('temp.json', param)
+    vis_p.vis.destroy_window()
     
 if __name__ == '__main__':
     main()
